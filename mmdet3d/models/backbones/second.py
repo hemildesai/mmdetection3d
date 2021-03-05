@@ -28,6 +28,7 @@ class SECOND(nn.Module):
                  fp16_enabled=False):
         super(SECOND, self).__init__()
         self.fp16_enabled = fp16_enabled
+        norm_cfg.update(fp16_enabled=fp16_enabled)
         assert len(layer_strides) == len(layer_nums)
         assert len(out_channels) == len(layer_nums)
 

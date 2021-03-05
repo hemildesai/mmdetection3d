@@ -39,6 +39,7 @@ class SECONDFPN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.fp16_enabled = fp16_enabled
+        norm_cfg.update(fp16_enabled=fp16_enabled)
 
         deblocks = []
         for i, out_channel in enumerate(out_channels):

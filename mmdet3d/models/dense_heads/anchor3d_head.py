@@ -67,7 +67,8 @@ class Anchor3DHead(nn.Module, AnchorTrainMixin):
                      loss_weight=1.0),
                  loss_bbox=dict(
                      type='SmoothL1Loss', beta=1.0 / 9.0, loss_weight=2.0),
-                 loss_dir=dict(type='CrossEntropyLoss', loss_weight=0.2)):
+                 loss_dir=dict(type='CrossEntropyLoss', loss_weight=0.2),
+                 fp16_enabled=False):
         super().__init__()
         self.in_channels = in_channels
         self.num_classes = num_classes
@@ -80,7 +81,7 @@ class Anchor3DHead(nn.Module, AnchorTrainMixin):
         self.assign_per_class = assign_per_class
         self.dir_offset = dir_offset
         self.dir_limit_offset = dir_limit_offset
-        self.fp16_enabled = False
+        self.fp16_enabled = fp16_enabled
 
         # build anchor generator
         self.anchor_generator = build_anchor_generator(anchor_generator)
@@ -98,7 +99,6 @@ class Anchor3DHead(nn.Module, AnchorTrainMixin):
         self.loss_cls = build_loss(loss_cls)
         self.loss_bbox = build_loss(loss_bbox)
         self.loss_dir = build_loss(loss_dir)
-        self.fp16_enabled = False
 
         self._init_layers()
         self._init_assigner_sampler()

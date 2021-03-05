@@ -47,11 +47,11 @@ class NaiveSyncBatchNorm1d(nn.BatchNorm1d):
     # customized normalization layer still needs this decorator
     # to force the input to be fp32 and the output to be fp16
     # TODO: make mmcv fp16 utils handle customized norm layers
-    # @force_fp32(out_fp16=True)
+    @force_fp32(out_fp16=True)
     def forward(self, input):
-        # assert (
-        #     input.dtype == torch.float32
-        # ), f"input should be in float32 type, got {input.dtype}"
+        assert (
+            input.dtype == torch.float32
+        ), f"input should be in float32 type, got {input.dtype}"
         if not self.training or not dist.is_initialized() or dist.get_world_size() == 1:
             return super().forward(input)
         assert input.shape[0] > 0, "SyncBN does not support empty inputs"
@@ -101,11 +101,11 @@ class NaiveSyncBatchNorm2d(nn.BatchNorm2d):
     # customized normalization layer still needs this decorator
     # to force the input to be fp32 and the output to be fp16
     # TODO: make mmcv fp16 utils handle customized norm layers
-    # @force_fp32(out_fp16=True)
+    @force_fp32(out_fp16=True)
     def forward(self, input):
-        # assert (
-        #     input.dtype == torch.float32
-        # ), f"input should be in float32 type, got {input.dtype}"
+        assert (
+            input.dtype == torch.float32
+        ), f"input should be in float32 type, got {input.dtype}"
         if not self.training or not dist.is_initialized() or dist.get_world_size() == 1:
             return super().forward(input)
 

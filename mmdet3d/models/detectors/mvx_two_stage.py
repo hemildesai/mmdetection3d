@@ -64,6 +64,8 @@ class MVXTwoStageDetector(Base3DDetector):
             pts_bbox_head.update(train_cfg=pts_train_cfg)
             pts_test_cfg = test_cfg.pts if test_cfg else None
             pts_bbox_head.update(test_cfg=pts_test_cfg)
+
+            pts_bbox_head.update(fp16_enabled=fp16_enabled)
             self.pts_bbox_head = builder.build_head(pts_bbox_head)
 
         if img_backbone:
