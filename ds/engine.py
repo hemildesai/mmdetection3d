@@ -1,13 +1,40 @@
 from collections import OrderedDict
 
 import torch
+import torch.nn as nn
 import torch.distributed as dist
 
 from deepspeed.runtime.engine import DeepSpeedEngine
-from mmcv.parallel.data_container import DataContainer
 from mmcv.parallel.scatter_gather import scatter_kwargs
+from mmcv.runner.fp16_utils import patch_forward_method
+from mmdet3d.ops.norm import NaiveSyncBatchNorm1d, NaiveSyncBatchNorm2d
+
+
+def patch_norm_fp32(module):
+    """Recursively convert normalization layers from FP16 to FP32.
+
+    Args:
+        module (nn.Module): The modules to be converted in FP16.
+
+    Returns:
+        nn.Module: The converted module, the normalization layers have been
+            converted to FP32.
+    """
+    if isinstance(module, (NaiveSyncBatchNorm1d, NaiveSyncBatchNorm2d)):
+        module.float()
+        if isinstance(module, nn.GroupNorm) or torch.__version__ < '1.3':
+            module.forward = patch_forward_method(module.forward, torch.half,
+                                                  torch.float)
+    for child in module.children():
+        patch_norm_fp32(child)
+    return module
+
 
 class DSEngine(DeepSpeedEngine):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.module = patch_norm_fp32(self.module)
+
     def _parse_losses(self, losses):
         log_vars = OrderedDict()
         for loss_name, loss_value in losses.items():

@@ -222,9 +222,11 @@ def train_detector(model,
             runner.register_hook(hook, priority=priority)
 
     if cfg.resume_from:
-        runner.resume(cfg.resume_from)
+        _, client_state = model_engine.load_checkpoint(cfg.work_dir, "ds")
+        runner.resume_from_ds(client_state)
     elif cfg.load_from:
-        runner.load_checkpoint(cfg.load_from)
+        # runner.load_checkpoint(cfg.load_from)
+        model_engine.load_checkpoint(cfg.work_dir, "ds")
     runner.run(data_loaders, cfg.workflow)
 
 
