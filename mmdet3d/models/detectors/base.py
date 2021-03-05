@@ -55,26 +55,6 @@ class Base3DDetector(BaseDetector):
         list[list[dict]]), with the outer list indicating test time
         augmentations.
         """
-        # if return_loss:
-        #     return self.forward_train(**kwargs)
-        # else:
-        #     return self.forward_test(**kwargs)
-        for i, p in enumerate(kwargs['points']):
-            # in case of training phase, where p should be a single tensor
-            if isinstance(p, torch.Tensor):
-                kwargs['points'][i] = torch.clamp_(
-                    p,
-                    - torch.finfo(p.dtype).max ** 0.75,
-                    torch.finfo(p.dtype).max ** 0.75
-                )
-            elif isinstance(p, list):
-                # in case of testing phase, where p should be a list of test-time-augmented input tensors
-                for j, pj in enumerate(p):
-                    kwargs['points'][i][j] = torch.clamp_(
-                        pj,
-                        - torch.finfo(pj.dtype).max ** 0.75,
-                        torch.finfo(pj.dtype).max ** 0.75
-                    )
         if return_loss:
             return self.forward_train(**kwargs)
         else:
