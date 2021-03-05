@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from mmcv.cnn import ConvModule, bias_init_with_prob, normal_init
+from mmcv.runner import force_fp32
 from torch import nn as nn
 
 from mmdet3d.core import box3d_multiclass_nms, limit_period, xywhr2xyxyr
@@ -275,6 +276,7 @@ class ShapeAwareHead(Anchor3DHead):
 
         return loss_cls, loss_bbox, loss_dir
 
+    @force_fp32(apply_to=('cls_scores', 'bbox_preds', 'dir_cls_preds'))
     def loss(self,
              cls_scores,
              bbox_preds,
