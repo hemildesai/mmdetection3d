@@ -24,8 +24,10 @@ class SECOND(nn.Module):
                  layer_nums=[3, 5, 5],
                  layer_strides=[2, 2, 2],
                  norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
-                 conv_cfg=dict(type='Conv2d', bias=False)):
+                 conv_cfg=dict(type='Conv2d', bias=False),
+                 fp16_enabled=False):
         super(SECOND, self).__init__()
+        self.fp16_enabled = fp16_enabled
         assert len(layer_strides) == len(layer_nums)
         assert len(out_channels) == len(layer_nums)
 

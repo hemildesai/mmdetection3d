@@ -50,13 +50,15 @@ class VFELayer(nn.Module):
                  out_channels,
                  norm_cfg=dict(type='BN1d', eps=1e-3, momentum=0.01),
                  max_out=True,
-                 cat_max=True):
+                 cat_max=True,
+                 fp16_enabled=False):
         super(VFELayer, self).__init__()
-        self.fp16_enabled = False
+        self.fp16_enabled = fp16_enabled
         self.cat_max = cat_max
         self.max_out = max_out
         # self.units = int(out_channels / 2)
 
+        norm_cfg.update(fp16_enabled=fp16_enabled)
         self.norm = build_norm_layer(norm_cfg, out_channels)[1]
         self.linear = nn.Linear(in_channels, out_channels, bias=False)
 

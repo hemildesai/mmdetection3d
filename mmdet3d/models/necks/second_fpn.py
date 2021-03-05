@@ -30,14 +30,15 @@ class SECONDFPN(nn.Module):
                  norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
                  upsample_cfg=dict(type='deconv', bias=False),
                  conv_cfg=dict(type='Conv2d', bias=False),
-                 use_conv_for_no_stride=False):
+                 use_conv_for_no_stride=False,
+                 fp16_enabled=False):
         # if for GroupNorm,
         # cfg is dict(type='GN', num_groups=num_groups, eps=1e-3, affine=True)
         super(SECONDFPN, self).__init__()
         assert len(out_channels) == len(upsample_strides) == len(in_channels)
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.fp16_enabled = False
+        self.fp16_enabled = fp16_enabled
 
         deblocks = []
         for i, out_channel in enumerate(out_channels):

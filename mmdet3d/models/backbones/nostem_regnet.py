@@ -57,7 +57,9 @@ class NoStemRegNet(RegNet):
         (1, 1008, 1, 1)
     """
 
-    def __init__(self, arch, **kwargs):
+    def __init__(self, arch, fp16_enabled=False, **kwargs):
+        self.fp16_enabled = fp16_enabled
+        kwargs["norm_cfg"].update(fp16_enabled=fp16_enabled)
         super(NoStemRegNet, self).__init__(arch, **kwargs)
 
     def _make_stem_layer(self, in_channels, base_channels):

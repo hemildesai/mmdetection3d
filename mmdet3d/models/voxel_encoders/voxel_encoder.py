@@ -323,7 +323,8 @@ class HardVFE(nn.Module):
                  norm_cfg=dict(type='BN1d', eps=1e-3, momentum=0.01),
                  mode='max',
                  fusion_layer=None,
-                 return_point_feats=False):
+                 return_point_feats=False,
+                 fp16_enabled=False):
         super(HardVFE, self).__init__()
         assert len(feat_channels) > 0
         if with_cluster_center:
@@ -337,7 +338,7 @@ class HardVFE(nn.Module):
         self._with_cluster_center = with_cluster_center
         self._with_voxel_center = with_voxel_center
         self.return_point_feats = return_point_feats
-        self.fp16_enabled = False
+        self.fp16_enabled = fp16_enabled
 
         # Need pillar (voxel) size and x/y offset to calculate pillar offset
         self.vx = voxel_size[0]
@@ -372,7 +373,8 @@ class HardVFE(nn.Module):
                     out_filters,
                     norm_cfg=norm_cfg,
                     max_out=max_out,
-                    cat_max=cat_max))
+                    cat_max=cat_max,
+                    fp16_enabled=fp16_enabled))
             self.vfe_layers = nn.ModuleList(vfe_layers)
         self.num_vfe = len(vfe_layers)
 

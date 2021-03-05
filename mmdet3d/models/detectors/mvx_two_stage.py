@@ -34,23 +34,30 @@ class MVXTwoStageDetector(Base3DDetector):
                  img_rpn_head=None,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None):
+                 pretrained=None,
+                 fp16_enabled=False):
         super(MVXTwoStageDetector, self).__init__()
+        self.fp16_enabled = fp16_enabled
 
         if pts_voxel_layer:
             self.pts_voxel_layer = Voxelization(**pts_voxel_layer)
         if pts_voxel_encoder:
+            pts_voxel_encoder.update(fp16_enabled=fp16_enabled)
             self.pts_voxel_encoder = builder.build_voxel_encoder(
                 pts_voxel_encoder)
         if pts_middle_encoder:
+            pts_middle_encoder.update(fp16_enabled=fp16_enabled)
             self.pts_middle_encoder = builder.build_middle_encoder(
                 pts_middle_encoder)
         if pts_backbone:
+            pts_backbone.update(fp16_enabled=fp16_enabled)
             self.pts_backbone = builder.build_backbone(pts_backbone)
         if pts_fusion_layer:
+            pts_fusion_layer.update(fp16_enabled=fp16_enabled)
             self.pts_fusion_layer = builder.build_fusion_layer(
                 pts_fusion_layer)
         if pts_neck is not None:
+            pts_neck.update(fp16_enabled=fp16_enabled)
             self.pts_neck = builder.build_neck(pts_neck)
         if pts_bbox_head:
             pts_train_cfg = train_cfg.pts if train_cfg else None
